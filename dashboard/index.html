@@ -1,0 +1,231 @@
+<!DOCTYPE html> 
+<html> 
+
+<head> 
+	<title>Inventory Management</title> 
+	<link rel="stylesheet" href="style.css"> 
+	<link rel="stylesheet" href="responsive.css">
+</head> 
+
+<body> 
+	<header> 
+		<div class="logosec"> 
+			<div class="logo">E-Mart</div> 
+		</div> 
+		
+		<div class="message"> 
+			<img src= "dp.png" class="dpicn"> 
+		</div>  
+	</header> 
+	<div class="main-container"> 
+		<div class="navcontainer"> 
+			<nav class="nav"> 
+				<div class="nav-upper-options" style="gap:0px"> 
+					<div class="nav-option option1"> 
+						<img src= "dashboard.png" class="nav-img"> 
+						<h3>Dashboard</h3>
+					</div> 
+
+					<div class="option2 nav-option"> 
+						<img src= "product.png"
+							class="nav-img"
+							alt="articles"> 
+						<a href="http://localhost:3000/product"><h3> Products</h3></a> 
+					</div> 
+
+					<div class="nav-option option3"> 
+						<img src= "customer.png"
+							class="nav-img"
+							alt="report"> 
+						<a href="http://localhost:3000/customer"><h3> Customers</h3></a> 
+					</div> 
+
+					<div class="nav-option option4"> 
+						<img src= "supplier.png"
+							class="nav-img"
+							alt="institution"> 
+						<a href="http://localhost:3000/supplier"><h3> Suppliers</h3></a> 
+					</div> 
+
+					<div class="nav-option option5"> 
+						<img src= "order.png"
+							class="nav-img"
+							alt="blog"> 
+						<a href="http://localhost:3000/order"><h3> Orders</h3></a> 
+					</div> 
+
+					<div class="nav-option option6"> 
+						<img src= "inventory.png"
+							class="nav-img"
+							alt="settings"> 
+						<a href="http://localhost:3000/inventory"><h3> Inventory</h3> 
+					</div> 
+
+					<div class="nav-option logout"> 
+						<img src= "logout.png"
+							class="nav-img"
+							alt="logout"> 
+						<a href="http://localhost:3000/"><h3>Logout</h3></a> 
+					</div> 
+
+				</div> 
+			</nav> 
+		</div>
+<div class="content-wrapper" id="contentWrapper">		
+		<div class="main"> 
+			<div class="box-container"> 
+
+				<div class="box box1"> 
+					<div class="text"> 
+						<h2 class="topic-heading" id="prod-count"></h2> 
+						<h2 class="topic">Total Products</h2> 
+					</div>
+					<img src= "product1.png"> 
+				</div>
+
+				<div class="box box2"> 
+					<div class="text"> 
+						<h2 class="topic-heading" id="ord-count"></h2> 
+						<h2 class="topic">Orders</h2> 
+					</div> 
+					<img src= "order.png" alt="likes"> 
+				</div> 
+
+				<div class="box box3"> 
+					<div class="text"> 
+						<h2 class="topic-heading" id="cust-count"></h2> 
+						<h2 class="topic">Customers</h2> 
+					</div> 
+					<img src= "customer.png" alt="comments"> 
+				</div> 
+
+				<div class="box box4"> 
+					<div class="text"> 
+						<h2 class="topic-heading" id="supp-count"></h2> 
+						<h2 class="topic">Suppliers</h2>
+					</div> 
+					<script>
+					function getSuppCount() {
+			            fetch('/count-prod/data')
+						.then(response => {
+							if (!response.ok) {
+								throw new Error('Network response was not ok');
+							}
+							return response.json();
+						})
+						.then(data => {
+							console.log('Number of users:', data.count);
+							document.getElementById('prod-count').innerText = data.count;
+						})
+						.catch(error => {
+							console.error('Error fetching user count:', error);
+						});
+				
+				fetch('/recent/data')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const reportBody=document.getElementById("productList");
+        data.forEach(product => {
+		
+            const productName = document.createElement('h3');
+			productName.classList.add('t-op');
+            productName.textContent = product.pname; 
+            const saledQuantity = document.createElement('h3');
+			saledQuantity.classList.add('t-op');
+            saledQuantity.textContent = product.stock;
+
+            const productContainer = document.createElement('div');
+            productContainer.classList.add('item1');
+            productContainer.appendChild(productName);
+			productContainer.appendChild(saledQuantity);			
+            reportBody.appendChild(productContainer);
+        });
+		
+    })
+    .catch(error => {
+        console.error('Error fetching recent product data:', error);
+    });
+
+			            fetch('/count-order/data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Number of users:', data.count);
+                    document.getElementById('ord-count').innerText = data.count;
+                })
+                .catch(error => {
+                    console.error('Error fetching user count:', error);
+                });
+
+
+			            fetch('/count-cust/data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Number of users:', data.count);
+                    document.getElementById('cust-count').innerText = data.count;
+                })
+                .catch(error => {
+                    console.error('Error fetching user count:', error);
+                });
+				
+            fetch('/count-supp/data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Number of users:', data.count);
+                    document.getElementById('supp-count').innerText = data.count;
+                })
+                .catch(error => {
+                    console.error('Error fetching user count:', error);
+                });
+        }
+		window.onload= getSuppCount;
+		document.getElementById('navToggle').addEventListener('click', function() {
+            const navbar = document.getElementById('navbar');
+            const contentWrapper = document.getElementById('contentWrapper');
+            navbar.classList.toggle('open');
+            contentWrapper.classList.toggle('nav-open');
+        });
+		</script>
+					<img src= "supplier.png"
+					alt="published"> 
+				</div> 
+			</div> 
+
+			<div class="report-container"> 
+				<div class="report-header"> 
+					<h1 class="recent-Articles">Recent Products</h1> 
+				</div> 
+
+				<div class="report-body" id="productList"> 
+					<div class="report-topic-heading"> 
+						<h3 class="t-op">Products</h3> 
+						<h3 class="t-op">Stock</h3>  
+					</div> 
+					</div>
+				</div> 
+			</div> 
+		</div> 
+	</div>
+	</div>
+</div>	
+</body> 
+</html>
