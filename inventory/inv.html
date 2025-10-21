@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Inventory Required</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="http://localhost:3000/home">Home</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="container">
+            <h1>Inventory Information</h1>
+            <table id="inventory-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+						<th>Supplier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--Data will be appended here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Inventory Dashboard. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // JavaScript code to fetch and display customer data
+        function fetchData() {
+            fetch('/inventory/reorder')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(reorder => {
+                    const tableBody = document.querySelector('#inventory-table tbody');
+                    tableBody.innerHTML = ''; 
+					let sno=1;
+                    reorder.forEach(inventory => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${sno}</td>
+                            <td>${inventory.pname}</td>
+                            <td>${inventory.stock}</td>
+                            <td>${inventory.pprice}</td>
+							<td>${inventory.sname}</td>`;
+                        tableBody.appendChild(row);
+						sno++;
+                    });
+                })
+                .catch(error => console.error('Error fetching customer data:', error));
+        }
+
+        // Fetch data when the page loads
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
