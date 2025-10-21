@@ -1,0 +1,101 @@
+
+<!DOCTYPE html> 
+<html> 
+
+<head> 
+	<title>Orders</title> 
+	<link rel="stylesheet" href="style.css"> 
+	<link rel="stylesheet" href="responsive.css">
+</head> 
+    <header>
+        <pre><h1>	Order Management</h1></pre>
+		<button class="nav-toggle" id="navToggle">
+			<span class="bar"></span>
+			<span class="bar"></span>
+			<span class="bar"></span>
+		</button>
+    </header>
+<body> 
+	<div class="main-container"> 
+		<div class="navcontainer" id="navbar"> 
+			<nav class="nav"> 
+				<div class="nav-upper-options"> 
+					<div class="nav-option option3">  
+					<a href="http://localhost:3000/order"><h3>Customer Orders</h3></a>
+					</div> 
+
+					<div class="nav-option option2">  
+						<a href="http://localhost:3000/intake"><h3>Order Intake</h3></a> 
+					</div> 
+
+					<div class="nav-option option1">  
+						<a href="http://localhost:3000/placed"><h3>Placed Orders</h3></a> 
+					</div> 
+
+					<div class="nav-option option4"> 
+						<a href="http://localhost:3000/out"><h3>Order Placement</h3></a> 
+					</div> 
+
+					<div class="nav-option option5">  
+						<a href="http://localhost:3000/sales"><h3>Sale Summary</h3></a> 
+					</div>  
+				</div> 
+			</nav> 
+		</div> 
+		<div class="content-wrapper" id="contentWrapper">
+			<h1>Orders Recieved</h1>
+			<div>
+				<table id="rec-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Supplier</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+						<th>Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+			    <script>
+					function fetchData() {
+                        fetch('/orderpla/order')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(orders => {
+                                const tableBody = document.querySelector('#rec-table tbody');
+                                tableBody.innerHTML = ''; 
+                                let sno = 1;
+                                orders.forEach(order => {
+                                    const row = document.createElement('tr');
+                                    const itemsList = order.items.map(item => `<li>${item.pname} (${item.itemQty} @ ${item.price})</li>`).join('');
+                                    const itemsHTML = `<ul>${itemsList}</ul>`;
+                                    row.innerHTML = `
+                                        <td>${sno}</td>
+                                        <td>${order.sname}</td>
+                                        <td>${order.qty}</td>
+                                        <td>${order.totamt}</td>
+                                        <td>${itemsHTML}</td>`;
+                                    tableBody.appendChild(row);
+                                    sno++;
+                                });
+                            })
+                            .catch(error => console.error('Error fetching customer data:', error));
+                    }
+                    window.onload = fetchData;
+					
+				document.getElementById('navToggle').addEventListener('click', function() {
+            const navbar = document.getElementById('navbar');
+            const contentWrapper = document.getElementById('contentWrapper');
+            navbar.classList.toggle('open');
+            contentWrapper.classList.toggle('nav-open');
+        });
+    </script>
+		</div>
+	</body>
+</html>	

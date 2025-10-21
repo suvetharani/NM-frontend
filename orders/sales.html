@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sale Summary</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <header>
+        <pre><h1>	Order Management</h1></pre>
+        <button class="nav-toggle" id="navToggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </header>
+    <div class="main-container">
+        <div class="navcontainer" id="navbar">
+            <nav class="nav">
+                <div class="nav-upper-options">
+                    <div class="nav-option option5">
+                        <a href="http://localhost:3000/order"><h3>Customer Orders</h3></a>
+                    </div>
+                    <div class="nav-option option2">
+                        <a href="http://localhost:3000/intake"><h3>Order Intake</h3></a>
+                    </div>
+                    <div class="nav-option option3">
+                        <a href="http://localhost:3000/placed"><h3>Placed Orders</h3></a>
+                    </div>
+                    <div class="nav-option option4">
+                        <a href="http://localhost:3000/out"><h3>Order Placement</h3></a>
+                    </div>
+                    <div class="nav-option option1">
+                        <a href="http://localhost:3000/sales"><h3>Sale Summary</h3></a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="content-wrapper" id="contentWrapper">
+            <div class="flex-container">
+                <div class="col-div">
+                    <table id="rec-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Credit</th>
+                                <th>Debit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="per-div">
+                    <div class="box-4">
+                        <p>Total sale <span></span></p>
+                        <div class="outer">
+                            <div class="inner">
+                                <div class="number" id="percent">70%</div>
+                                <svg width="160px" height="160px">
+                                    <circle cx="80" cy="80" r="70" stroke-linecap="round" stroke-width="20" fill="none" stroke="#f7403b" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function fetchData() {
+                fetch('/trans/data')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const tableBody = document.querySelector('#rec-table tbody');
+                        tableBody.innerHTML = '';
+                        let sno = 1;
+                        data.forEach(datas => {
+                            const row = document.createElement('tr');
+                            if (datas.ttype == 'credit') {
+                                row.innerHTML = `
+                                    <td>${sno}</td>
+                                    <td style="color:green">${datas.totamt}</td>
+                                    <td></td>`;
+                                tableBody.appendChild(row);
+                                sno++;
+                            } else {
+                                row.innerHTML = `
+                                    <td>${sno}</td>
+                                    <td></td>
+                                    <td style="color:red">${datas.totamt}</td>`;
+                                tableBody.appendChild(row);
+                                sno++;
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error fetching customer data:', error));
+
+                fetch('/stock/data')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const percentage = data.percentage;
+                        document.getElementById("percent").innerText = `${percentage.toFixed(2)}%`;
+
+                        const offset = 450 - (percentage / 100) * 450;
+						const circle=document.querySelector('circle');
+                        circle.style.setProperty('--change',offset);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching stock percentage:', error);
+                    });
+            }
+            window.onload = fetchData;
+            document.getElementById('navToggle').addEventListener('click', function () {
+                const navbar = document.getElementById('navbar');
+                const contentWrapper = document.getElementById('contentWrapper');
+                navbar.classList.toggle('open');
+                contentWrapper.classList.toggle('nav-open');
+            });
+        </script>
+    </div>
+</body>
+</html>
