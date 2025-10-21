@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Customers</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="container">
+            <h1>Customer Information</h1>
+            <table id="customer-table">
+                <thead>
+                    <tr>
+                        <th>CID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>CD Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Customer Dashboard. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // JavaScript code to fetch and display customer data
+        function fetchData() {
+            fetch('/customer/data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.querySelector('#customer-table tbody');
+                    tableBody.innerHTML = ''; 
+                    data.forEach(customer => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${customer.cid}</td>
+                            <td>${customer.cname}</td>
+                            <td>${customer.cphno}</td>
+                            <td>${customer.cpoints}</td>`;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching customer data:', error));
+        }
+
+        // Fetch data when the page loads
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
